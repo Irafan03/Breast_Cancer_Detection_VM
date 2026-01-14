@@ -1,189 +1,247 @@
-# Application de Détection du Cancer du Sein (IDC)
+# 🩺 Application de Détection du Cancer du Sein (IDC)
 
-Application web complète pour la détection du cancer du sein (IDC) utilisant l'intelligence artificielle. Le projet se compose d'un backend FastAPI avec un modèle TensorFlow/ResNet50 et d'un frontend Angular.
+Application **web et mobile** pour la **détection du cancer du sein (IDC)** basée sur l’intelligence artificielle. Le projet comprend :
 
-## 🏗️ Structure du Projet
+* un **backend FastAPI** avec un modèle **TensorFlow (ResNet50)**,
+* un **frontend Angular**,
+* une **version mobile Android** via **Capacitor**,
+* une exposition de l’API pour mobile via **ngrok**.
+
+---
+
+## 🏗️ Structure du projet
 
 ```
-Brest-Cancer-Detection/
-├── backend/              # API FastAPI avec modèle TensorFlow
-│   ├── main.py          # Point d'entrée de l'API
-│   ├── script.py        # Logique de prédiction avec ResNet50
-│   └── idc_breast_cancer_model_final/  # Modèle entraîné
+Breast_Cancer_Detection_VM/
+├── backend/                     # API FastAPI + modèle IA
+│   ├── main.py                  # Point d’entrée de l’API
+│   ├── script.py                # Logique de prédiction (ResNet50)
+│   ├── requirements.txt
+│   └── idc_breast_cancer_model_final/
 │       └── model.weights.h5
-└── frontEnd/            # Application Angular
-    └── src/
+├── frontEnd/                    # Application Angular
+│   ├── src/
+│   ├── angular.json
+│   └── package.json
+├── 0/                           # Dataset (classe 0 – bénin)
+├── 1/                           # Dataset (classe 1 – malin)
+└── README.md
 ```
+
+---
 
 ## 📋 Prérequis
 
-### Pour le Backend
-- Python 3.8 ou supérieur
-- pip (gestionnaire de paquets Python)
+### Backend
 
-### Pour le Frontend
-- Node.js (version 18 ou supérieure)
-- npm (vient avec Node.js)
+* Python **3.8+**
+* pip
 
-## 🚀 Installation et Lancement
+### Frontend / Mobile
 
-### 1. Backend (API FastAPI)
+* Node.js **18+**
+* npm
+* Angular CLI
+* Capacitor (`@capacitor/core`, `@capacitor/cli`)
+* Android Studio (pour Android)
 
-#### Étape 1 : Aller dans le dossier backend
+---
+
+## 🚀 Lancement du Backend (FastAPI)
+
+### 1️⃣ Accéder au dossier backend
+
 ```bash
 cd backend
 ```
 
-#### Étape 2 : Créer un environnement virtuel (recommandé)
+### 2️⃣ Créer et activer un environnement virtuel (recommandé)
+
 ```bash
 # Windows
 python -m venv venv
 venv\Scripts\activate
 
-# Linux/Mac
+# Linux / Mac
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-#### Étape 3 : Installer les dépendances
+### 3️⃣ Installer les dépendances
+
 ```bash
 pip install -r requirements.txt
-# ou manuellement :
-pip install fastapi uvicorn[standard] tensorflow opencv-python numpy python-multipart python-dotenv google-generativeai
 ```
 
-#### Étape 4 : Lancer le serveur
+### 4️⃣ Lancer l’API
+
 ```bash
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Le backend sera accessible sur `http://localhost:8000`
+📍 API disponible sur : `http://localhost:8000`
 
-📝 **Note**: Le modèle sera chargé au démarrage. Attendez le message "Modèle chargé avec succès" avant d'utiliser l'API.
+* Documentation Swagger : `http://localhost:8000/docs`
+* Endpoint principal : `POST /predict`
 
-#### Vérification
-Vous pouvez tester l'API en visitant: `http://localhost:8000` (devrait afficher un message JSON)
-
-Documentation interactive de l'API: `http://localhost:8000/docs`
+> ℹ️ Le modèle TensorFlow est chargé au démarrage (quelques secondes).
 
 ---
 
-### 2. Frontend (Application Angular)
+## 🌐 Lancement du Frontend (Angular Web)
 
-#### Étape 1 : Aller dans le dossier frontend
+### 1️⃣ Accéder au dossier frontend
+
 ```bash
 cd frontEnd
 ```
 
-#### Étape 2 : Installer les dépendances
+### 2️⃣ Installer les dépendances
+
 ```bash
 npm install
 ```
 
-#### Étape 3 : Lancer le serveur de développement
+### 3️⃣ Lancer le serveur Angular
+
 ```bash
-npm start
-# ou
 ng serve
+# ou
+npm start
 ```
 
-Le frontend sera accessible sur `http://localhost:4200`
+📍 Application web : `http://localhost:4200`
 
 ---
 
-## 🔄 Lancement Complet
+## 📱 Version Mobile (Android avec Capacitor)
 
-Pour utiliser l'application complète, vous devez lancer **les deux serveurs en parallèle** :
+### 1️⃣ Build Angular
 
-### Terminal 1 - Backend
 ```bash
-cd backend
-# Activer l'environnement virtuel si vous en avez créé un
-venv\Scripts\activate  # Windows
-# source venv/bin/activate  # Linux/Mac
-
-uvicorn main:app --reload --port 8000
+ng build
 ```
 
-### Terminal 2 - Frontend
+### 2️⃣ Synchroniser Capacitor
+
 ```bash
-cd frontEnd
-npm start
+npx cap sync
 ```
 
-## 📡 Configuration de l'API
+### 3️⃣ Ouvrir Android Studio
 
-- **Backend URL**: `http://localhost:8000`
-- **Frontend URL**: `http://localhost:4200`
-- **Endpoint de prédiction**: `POST http://localhost:8000/predict`
+```bash
+npx cap open android
+```
 
-Le backend est configuré pour accepter les requêtes CORS depuis `http://localhost:4200`.
+📱 L’application mobile communique avec le backend via **ngrok**.
 
-## 🧪 Test de l'Application
+---
 
-1. Assurez-vous que les deux serveurs sont lancés
-2. Ouvrez votre navigateur sur `http://localhost:4200`
-3. Uploadez une image histopathologique
-4. Obtenez la prédiction avec le niveau de confiance
+## 🌍 Exposition du Backend pour Mobile (ngrok)
 
-## 📦 Dépendances Principales
+Le mobile Android ne peut pas accéder à `localhost`. On utilise **ngrok**.
+
+### Lancer ngrok
+
+```bash
+ngrok http 8000
+```
+
+Exemple d’URL générée :
+
+```
+https://xxxx-xxxx.ngrok-free.app
+```
+
+➡️ Mettre cette URL dans :
+
+```
+frontEnd/src/app/services/api.service.ts
+```
+
+---
+
+## 🔌 Configuration CORS
+
+Le backend autorise :
+
+* `http://localhost:4200`
+* les URLs **ngrok**
+
+Configuration dans `backend/main.py`.
+
+---
+
+## 🧪 Utilisation de l’application
+
+1. Lancer le **backend**
+2. Lancer le **frontend web** ou l’app **mobile Android**
+3. Importer une image histopathologique (PNG / JPG / JPEG)
+4. Obtenir :
+
+   * la prédiction (**bénin / malin**)
+   * le **taux de confiance**
+
+---
+
+## 📦 Dépendances principales
 
 ### Backend
-- `fastapi`: Framework web moderne pour Python
-- `uvicorn`: Serveur ASGI
-- `tensorflow`: Framework de machine learning
-- `opencv-python`: Traitement d'images
-- `numpy`: Calculs numériques
-- `python-multipart`: Support des uploads de fichiers
-- `python-dotenv`: Gestion des variables d'environnement
-- `google-generativeai`: API Google Gemini pour la génération de flashcards
+
+* fastapi
+* uvicorn
+* tensorflow
+* opencv-python
+* numpy
+* python-multipart
+* python-dotenv
+* google-generativeai
 
 ### Frontend
-- `@angular/core`: Framework Angular
-- `@angular/common`: Utilitaires Angular
-- `rxjs`: Programmation réactive
-- `jspdf`: Génération de PDF
 
-## ⚠️ Notes Importantes
+* @angular/core
+* rxjs
+* jspdf
+* @capacitor/core
 
-1. **Premier démarrage**: Le chargement du modèle TensorFlow peut prendre quelques secondes
-2. **Mémoire**: Le modèle nécessite de la RAM disponible (recommandé: 4GB+)
-3. **Formats d'images**: L'application accepte les images au format PNG, JPG, JPEG
+---
 
-## 🐛 Dépannage
+## 🤖 API Google Gemini (Flashcards)
 
-### Backend ne démarre pas
-- Vérifiez que le port 8000 n'est pas déjà utilisé
-- Vérifiez que toutes les dépendances sont installées
-- Vérifiez que le fichier `model.weights.h5` existe dans `backend/idc_breast_cancer_model_final/`
+Utilisée pour la génération de flashcards médicales.
 
-### Frontend ne se connecte pas à l'API
-- Vérifiez que le backend est lancé sur le port 8000
-- Vérifiez la configuration CORS dans `backend/main.py`
-- Vérifiez l'URL de l'API dans `frontEnd/src/app/services/api.service.ts`
+### Configuration
 
-### Erreur "Module not found"
-- Réinstallez les dépendances avec `pip install -r requirements.txt` (si le fichier existe)
-- Ou installez manuellement toutes les dépendances listées ci-dessus
+1. Créer une clé sur **Google AI Studio**
+2. Créer un fichier `.env` dans `backend/`
+3. Ajouter :
 
-## 🤖 Configuration Google Gemini API
+```
+GEMINI_API_KEY=your_api_key_here
+```
 
-L'API Google Gemini est utilisée pour la génération de flashcards.
+---
 
-### ✅ Avantages
-- **100% gratuit** : 60 requêtes par minute
-- **Pas de carte bancaire** requise
-- **Très intelligent** : Comparable à GPT-4
-- **Gratuit à long terme**
+## ⚠️ Notes importantes
 
-### 🔑 Configuration
+* Ne **jamais versionner** : `node_modules/`, `dist/`, `.env`
+* RAM recommandée : **4 Go+**
+* Le premier lancement est plus lent (chargement du modèle)
 
-1. **Obtenez une clé API** sur [Google AI Studio](https://ai.google.dev/)
-2. **Créez un fichier `.env`** dans le dossier `backend/`
-3. **Ajoutez votre clé API** :
-   ```env
-   GEMINI_API_KEY=votre_cle_api_ici
-   ```
+---
 
-⚠️ **Important** : Le fichier `.env` est déjà dans `.gitignore` et ne sera pas commité.
+## 🐛 Dépannage rapide
+
+### ❌ git add frontEnd échoue
+
+* Vérifier que `node_modules/` est dans `.gitignore`
+* Supprimer `frontEnd/.git` s’il existe
+
+### ❌ Mobile ne se connecte pas
+
+* Vérifier ngrok actif
+* Vérifier l’URL API côté Angular
+
+---
 
