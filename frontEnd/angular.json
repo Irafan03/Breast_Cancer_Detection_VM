@@ -1,0 +1,155 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm",
+    "analytics": "4001d1b1-7b7c-4174-b070-7860af1e2f06",
+    "schematicCollections": [
+      "@ionic/angular-toolkit"
+    ]
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "breast-cancer-detection": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+         "options": {
+  "browser": "src/main.ts",
+  "tsConfig": "tsconfig.app.json",
+  "inlineStyleLanguage": "scss",
+
+  "baseHref": "./",
+  "deployUrl": "./",
+
+  "assets": [
+    {
+      "glob": "**/*",
+      "input": "public"
+    }
+  ],
+  "styles": [
+    "src/styles.scss",
+    {
+      "input": "node_modules/@ionic/angular/css/core.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/normalize.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/structure.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/typography.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/display.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/padding.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/float-elements.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/text-alignment.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/text-transformation.css"
+    },
+    {
+      "input": "node_modules/@ionic/angular/css/flex-utils.css"
+    },
+    {
+      "input": "src/theme/variables.css"
+    }
+  ]
+},
+          "configurations": {
+            "production": {
+              "outputHashing": "all",
+               "sourceMap": true,
+             "serviceWorker": "ngsw-config.json",
+             "budgets": [
+  {
+    "type": "initial",
+    "maximumWarning": "2mb",
+    "maximumError": "5mb"
+  },
+  {
+    "type": "anyComponentStyle",
+    "maximumWarning": "500kb",
+    "maximumError": "2mb"
+  }
+],
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "breast-cancer-detection:build:production"
+            },
+            "development": {
+              "buildTarget": "breast-cancer-detection:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        },
+        "ionic-cordova-serve": {
+          "builder": "@ionic/angular-toolkit:cordova-serve",
+          "options": {
+            "cordovaBuildTarget": "breast-cancer-detection:ionic-cordova-build",
+            "devServerTarget": "breast-cancer-detection:serve"
+          },
+          "configurations": {
+            "production": {
+              "cordovaBuildTarget": "breast-cancer-detection:ionic-cordova-build:production",
+              "devServerTarget": "breast-cancer-detection:serve:production"
+            }
+          }
+        },
+        "ionic-cordova-build": {
+          "builder": "@ionic/angular-toolkit:cordova-build",
+          "options": {
+            "browserTarget": "breast-cancer-detection:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "breast-cancer-detection:build:production"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schematics": {
+    "@ionic/angular-toolkit:component": {
+      "styleext": "scss"
+    },
+    "@ionic/angular-toolkit:page": {
+      "styleext": "scss"
+    }
+  }
+}

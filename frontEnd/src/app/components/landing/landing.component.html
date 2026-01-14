@@ -1,0 +1,209 @@
+<div class="landing-container">
+  <!-- Modal d'authentification -->
+  <app-auth *ngIf="showAuthModal" (close)="closeAuthModal()"></app-auth>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <img src="logo2.png" width="60px" height="60px" alt="">
+        <span style="color: black;">Breast</span> <span style="color: rgb(1, 1, 110);">Care</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#about">About</a></li>
+        <li><button class="btn-nav" (click)="getStarted()">Get Started</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-text">
+      <h1>Early breast cancer detection with <span class="highlight">medical AI</span></h1>
+      <p>Advanced technology to help healthcare professionals in screening and early detection. Accurate, fast and reliable.</p>
+      <button class="btn-primary" (click)="getStarted()">Get Started</button>
+    </div>
+    <div class="hero-visual">
+      <div class="visual-card">
+        <div class="scan-preview">
+          <div class="scan-header">
+            <span class="scan-title">Analysis in progress</span>
+            <span class="status-badge">● Processing</span>
+          </div>
+          <div class="scan-placeholder">
+          
+            <img src="/landing.png" alt="logo"/>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill"></div>
+          </div>
+        </div>
+        <div class="metric-grid">
+          <div class="metric">
+            <div class="metric-label">Accuracy</div>
+            <div class="metric-value">98.5%</div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Analysis time</div>
+            <div class="metric-value">&lt; 30s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="features-container">
+      <div class="section-header">
+        <h2>Why choose BreastCare?</h2>
+        <p>Features designed for healthcare professionals</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature">
+          <div class="img_icon"><img src="ai.png" alt=""></div>
+          <h3>Artificial Intelligence</h3>
+          <p>Algorithms trained on millions of medical images for accurate detection of anomalies.</p>
+        </div>
+        <div class="feature">
+          <div class="img_icon"><img src="fast.png" alt=""></div>
+          <h3>Fast Analysis</h3>
+          <p>Results available in less than 30 seconds to speed up the diagnosis process.</p>
+        </div>
+        <div class="feature">
+          <div class="img_icon"><img src="security.png" alt=""></div>
+          <h3>Maximum Security</h3>
+          <p>GDPR compliant and medical data encryption to protect patient confidentiality.</p>
+        </div>
+        <div class="feature">
+          <div class="img_icon"><img src="reports.png"  width="64px" height="64px" alt=""></div>
+          <h3>Detailed Reports</h3>
+          <p>Complete documentation and clear visualizations to facilitate medical decision-making.</p>
+        </div>
+        <div class="feature">
+          <div class="img_icon"><img src="validatione.png"  width="64px" height="64px"></div>
+          <h3>Clinical Validation</h3>
+          <p>Tested and approved by experienced radiologists in multiple hospital centers.</p>
+        </div>
+        <div class="feature">
+          <div class="img_icon">
+            <img src="interface.png" alt="">
+          </div>
+          <h3>Intuitive Interface</h3>
+          <p>Easy to use, integrates into existing workflow without complex training.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats">
+    <div class="stats-container">
+      <div class="stat">
+        <div class="stat-number">98.5%</div>
+        <div class="stat-label">Detection accuracy</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">250K+</div>
+        <div class="stat-label">Analyses performed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">120+</div>
+        <div class="stat-label">Partner hospitals</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Availability</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-content">
+      <h2>Join us in the fight against breast cancer</h2>
+      <p>Try BreastCare free and discover how our technology can improve your diagnostics.</p>
+      <button class="btn-primary" (click)="getStarted()">Start free trial</button>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="about-container">
+      <div class="section-header">
+        <h2>À propos des réalisateurs</h2>
+        <p>Voici l'équipe qui a développé cette application.</p>
+      </div>
+
+      <div class="team-grid">
+        <div class="team-member">
+          <div class="avatar">
+            <img src="/member1.svg" alt="Abdelilah" />
+          </div>
+          <div class="member-name">Abdelilah ERRAGUIBI</div>
+          
+        </div>
+
+        <div class="team-member">
+          <div class="avatar">
+            <img src="/member2.svg" alt="Marion" />
+          </div>
+          <div class="member-name">Imane IRAFAN</div>
+          
+        </div>
+
+        <div class="team-member">
+          <div class="avatar">
+            <img src="/member3.svg" alt="Sophie" />
+          </div>
+          <div class="member-name">Abdessamad</div>
+          
+        </div>
+
+        <div class="team-member">
+          <div class="avatar">
+            <img src="/member4.svg" alt="Jules" />
+          </div>
+          <div class="member-name">Ibtissam</div>
+          
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-brand">
+        <h3>BreastCare</h3>
+        <p>AI-powered diagnostic support solution for early detection of breast cancer.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Product</h4>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#privacy">Privacy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2024 BreastCare. Certified medical device. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

@@ -1,0 +1,220 @@
+
+<div class="upload-container">
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <img src="logo2.png" width="60px" height="60px" alt="">
+        <span style="color: black;">Breast</span> <span style="color: rgb(1, 1, 110);">Care</span>
+      </div>
+      <ul class="nav-links">
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/upload">Analyser</a></li>
+        <li><a routerLink="/history">Historique</a></li>
+        <li *ngIf="currentUser" class="user-info">
+          <span class="user-name">{{ currentUser.name || currentUser.email }}</span>
+          <button class="btn-logout" (click)="logout()">Déconnexion</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="page-header">
+      <h2>Nouvelle Analyse</h2>
+      <p>Téléversez une image histopathologique pour une analyse par IA</p>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="upload-section" *ngIf="!selectedFile && !result">
+      <div 
+        class="upload-area" 
+        [class.dragover]="false"
+        (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)"
+        (drop)="onDrop($event)"
+        (click)="fileInput.click()"
+      >
+        <div class="upload-icon">📁</div>
+        <h3>Téléverser une image médicale</h3>
+        <p>Glissez-déposez votre image ici, ou cliquez pour parcourir</p>
+        <input 
+          type="file" 
+          #fileInput
+          id="fileInput" 
+          class="file-input" 
+          accept="image/*"
+          (change)="onFileSelected($event)"
+        >
+        <button class="btn-upload" type="button">
+          Choisir un fichier
+        </button>
+        <div class="file-types">Formats supportés : JPEG, PNG</div>
+      </div>
+      <div class="error-message" *ngIf="error">
+        <div class="error-content" [innerHTML]="error.replace(/\n/g, '<br>')"></div>
+      </div>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="preview-section" *ngIf="selectedFile && !result && !isUploading">
+      <div class="preview-header">
+        <h3>Aperçu de l'image</h3>
+        <button class="btn-remove" (click)="reset()">Supprimer</button>
+      </div>
+      <div class="preview-content">
+        <div class="image-preview">
+          <img [src]="previewUrl" alt="Preview" id="imagePreview">
+        </div>
+        <div class="image-info">
+          <div class="info-card">
+            <div class="info-label">Nom du fichier</div>
+            <div class="info-value">{{ selectedFile?.name || '-' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Taille</div>
+            <div class="info-value">{{ selectedFile ? getFileSize(selectedFile.size) : '-' }}</div>
+          </div>
+          <div class="info-card">
+            <div class="info-label">Dimensions</div>
+            <div class="info-value" *ngIf="imageDimensions">{{ imageDimensions }}</div>
+            <div class="info-value" *ngIf="!imageDimensions">Calcul...</div>
+          </div>
+          <button class="btn-analyze" (click)="uploadImage()" [disabled]="isUploading">
+            Démarrer l'analyse
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analysis Progress -->
+    <div class="analysis-progress" *ngIf="isUploading">
+      <div class="progress-icon">⚡</div>
+      <h3>Analyse en cours...</h3>
+      <p>L'intelligence artificielle analyse votre image</p>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progressPercent"></div>
+      </div>
+      <div class="progress-meta">
+        <div class="progress-percentage">{{ progressPercent | number:'1.0-0' }}%</div>
+        <div class="progress-text">{{ loadingMessage }}</div>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="results-section" *ngIf="result">
+      <!-- Header with Download Button -->
+      <div class="results-header-card">
+        <div class="results-header-content">
+          <h2>Résultats de l'analyse</h2>
+          <div class="analysis-date">{{ getCurrentDate() }}</div>
+        </div>
+        <button class="btn-download" (click)="generateMedicalReport()">
+          <span class="download-icon"><img src="dowload.png" 
+           width="30px" height="30px" color="white" alt=""></span>
+          Télécharger le rapport
+        </button>
+      </div>
+
+      <!-- Results Grid -->
+      <div class="results-grid">
+        <div class="result-card primary" [class.positive]="isPositive()" [class.negative]="!isPositive()">
+          <div class="result-icon">{{ isPositive() ? '⚠️' : '✅' }}</div>
+          <div class="result-label">Résultat Global</div>
+          <div class="result-value" [class.success]="!isPositive()" [class.warning]="isPositive()">
+            {{ isPositive() ? 'POSITIF' : 'NÉGATIF' }}
+          </div>
+          <div class="result-description">{{ result.label }}</div>
+        </div>
+        
+        <div class="result-card">
+          <div class="result-icon">📊</div>
+          <div class="result-label">Score de confiance</div>
+          <div class="result-value">{{ getConfidencePercentage() }}%</div>
+          <div class="result-description">Fiabilité de l'analyse</div>
+        </div>
+        
+        <div class="result-card">
+          <div class="result-icon">⏱️</div>
+          <div class="result-label">Temps de traitement</div>
+          <div class="result-value">{{ processingTime }}</div>
+          <div class="result-description">Durée de l'analyse</div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-icon">🆔</div>
+          <div class="result-label">ID Patient</div>
+          <div class="result-value">{{ patientId }}</div>
+          <div class="result-description">Identifiant unique</div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-icon">🔬</div>
+          <div class="result-label">Type d'examen</div>
+          <div class="result-value-small">{{ imageType }}</div>
+          <div class="result-description">{{ modelVersion }}</div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-icon">📐</div>
+          <div class="result-label">Dimensions</div>
+          <div class="result-value-small">{{ imageDimensions }}</div>
+          <div class="result-description">Résolution de l'image</div>
+        </div>
+      </div>
+
+      <!-- Detailed Findings -->
+      <div class="detailed-results">
+        <h3>Résultats détaillés</h3>
+        <ul class="findings-list">
+          <li class="finding-item">
+            <div class="finding-header">
+              <span class="finding-title">Détection IDC (Carcinome canalaire invasif)</span>
+              <span class="confidence-badge">{{ getConfidencePercentage() }}% Confiance</span>
+            </div>
+            <div class="finding-description">
+              {{ isPositive() 
+                ? 'Carcinome canalaire invasif (IDC) détecté dans l\'échantillon de tissu analysé. Le modèle a identifié des irrégularités tissulaires, une densité anormale et des patterns typiques des cellules cancéreuses. Une consultation médicale immédiate est recommandée pour confirmer le diagnostic et établir un plan de traitement approprié.' 
+                : 'Aucun signe de carcinome canalaire invasif (IDC) détecté. Le tissu apparaît normal selon les paramètres d\'analyse du modèle. Les structures observées correspondent à des tissus sains. Un suivi médical régulier reste néanmoins recommandé selon les recommandations de votre médecin.' }}
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Medical Recommendation -->
+      <div class="recommendation-box" [class.warning]="isPositive()" [class.info]="!isPositive()">
+        <h3>
+          <span class="recommendation-icon">{{ isPositive() ? '' : '✓' }}</span>
+          Recommandation médicale
+        </h3>
+        <p>
+          {{ isPositive()
+            ? '⚠️ IMPORTANT : Ce résultat suggère la présence d\'anomalies nécessitant une attention médicale immédiate. Veuillez consulter un oncologue ou un radiologue qualifié dans les plus brefs délais pour effectuer des examens complémentaires (biopsie, analyses approfondies) et établir un diagnostic définitif. Cette analyse IA est un outil d\'aide à la décision et ne remplace pas un examen médical professionnel.'
+            : '✓ Ce résultat est rassurant mais ne remplace pas un suivi médical régulier. Continuez vos contrôles périodiques selon les recommandations de votre médecin. En cas d\'apparition de symptômes inhabituels, consultez immédiatement un professionnel de santé. La détection précoce reste essentielle pour une prise en charge optimale.' }}
+        </p>
+      </div>
+
+      <!-- Legal Warning -->
+      <div class="legal-warning">
+        <h3> Avertissement légal</h3>
+        <p>
+          Ce système est un outil d'aide à la décision médicale et <strong>ne remplace EN AUCUN CAS</strong> l'avis d'un professionnel de santé qualifié. 
+          Ce résultat doit être interprété par un médecin compétent. Un diagnostic définitif nécessite un examen clinique complet. 
+          L'exactitude du modèle IA peut varier selon la qualité de l'image. La confidentialité des données patient est strictement protégée.
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-secondary" (click)="reset()">Nouvelle analyse</button>
+        <button class="btn-primary" (click)="generateMedicalReport()">
+          <span class="download-icon"><img src="dowload.png" 
+           width="30px" height="30px" color="white" alt=""></span>
+        
+          Télécharger le rapport complet
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

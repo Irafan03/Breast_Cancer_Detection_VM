@@ -1,0 +1,112 @@
+<div class="history-container">
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-content">
+      <div class="logo">
+        <img src="logo2.png" width="60px" height="60px" alt="">
+        <span style="color: black;">Breast</span> <span style="color: rgb(1, 1, 110);">Care</span>
+      </div>
+      <ul class="nav-links">
+        <li><a routerLink="/">Accueil</a></li>
+        <li><a routerLink="/upload">Analyser</a></li>
+        <li><a routerLink="/history" class="active">Historique</a></li>
+        <li *ngIf="currentUser" class="user-info">
+          <span class="user-name">{{ currentUser.name || currentUser.email }}</span>
+          <button class="btn-logout" (click)="authService.logout()">Déconnexion</button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="container">
+    <div class="page-header">
+      <div class="header-content">
+        <div>
+          <h1>Historique des Analyses</h1>
+          <p>Consultez toutes vos analyses précédentes</p>
+        </div>
+        <button *ngIf="analyses.length > 0" class="btn-clear" (click)="clearAll()">
+          Supprimer tout l'historique
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="loading-state">
+      <div class="spinner"></div>
+      <p>Chargement de l'historique...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && analyses.length === 0" class="empty-state">
+      <div class="empty-icon">📋</div>
+      <h2>Aucune analyse enregistrée</h2>
+      <p>Vous n'avez pas encore effectué d'analyses. Commencez par analyser une image !</p>
+      <a routerLink="/upload" class="btn-primary">Effectuer une analyse</a>
+    </div>
+
+    <!-- History List -->
+    <div *ngIf="!isLoading && analyses.length > 0" class="history-list">
+      <div *ngFor="let analysis of analyses" class="history-card">
+        <div class="card-header">
+          <div class="card-title">
+            <h3>{{ analysis.fileName }}</h3>
+            <span class="card-date">{{ formatDate(analysis.date) }}</span>
+          </div>
+          <button class="btn-delete" (click)="deleteAnalysis(analysis.id)" title="Supprimer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+          </button>
+        </div>
+
+        <div class="card-content">
+          <div class="card-image">
+            <img [src]="analysis.imageData" [alt]="analysis.fileName" />
+          </div>
+
+          <div class="card-details">
+            <div class="result-badge" [class.positive]="isPositive(analysis.result.label)" [class.negative]="!isPositive(analysis.result.label)">
+              <span class="badge-icon">{{ isPositive(analysis.result.label) ? '⚠️' : '✅' }}</span>
+              <span class="badge-text">{{ isPositive(analysis.result.label) ? 'POSITIF' : 'NÉGATIF' }}</span>
+            </div>
+
+            <div class="detail-grid">
+              <div class="detail-item">
+                <span class="detail-label">Score de confiance</span>
+                <span class="detail-value">{{ getConfidencePercentage(analysis.result.confidence) }}%</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">ID Patient</span>
+                <span class="detail-value">{{ analysis.patientId }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Dimensions</span>
+                <span class="detail-value">{{ analysis.imageDimensions }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Temps de traitement</span>
+                <span class="detail-value">{{ analysis.processingTime }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Modèle</span>
+                <span class="detail-value">{{ analysis.modelVersion }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Type</span>
+                <span class="detail-value">{{ analysis.imageType }}</span>
+              </div>
+            </div>
+
+            <div class="result-description">
+              <strong>Résultat :</strong> {{ analysis.result.label }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

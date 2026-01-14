@@ -1,0 +1,104 @@
+<!-- Bouton flottant pour ouvrir le chatbot -->
+<div class="chatbot-toggle" [class.open]="isChatOpen" (click)="toggleChat()">
+  <svg *ngIf="!isChatOpen" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+  </svg>
+  <svg *ngIf="isChatOpen" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</div>
+
+<!-- Fenêtre du chatbot -->
+<div class="chatbot-window" [class.open]="isChatOpen">
+  <!-- En-tête -->
+  <div class="chatbot-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path>
+          <path d="M12 6v6l4 2"></path>
+        </svg>
+      </div>
+      <div class="header-info">
+        <h3>Assistant Médical</h3>
+        <span class="status">En ligne</span>
+      </div>
+    </div>
+    <button class="clear-button" (click)="clearChat()" title="Effacer la conversation">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chatbot-messages" #messageContainer>
+    <!-- Message de bienvenue -->
+    <div class="message assistant" *ngIf="messages.length === 0">
+      <div class="message-content">
+        <div class="message-bubble">
+          <p>Bonjour ! Je suis votre assistant médical intelligent. Comment puis-je vous aider aujourd'hui ?</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Liste des messages -->
+    <div class="message" [class.user]="message.role === 'user'" [class.assistant]="message.role === 'assistant'" *ngFor="let message of messages">
+      <div class="message-content">
+        <div class="message-bubble">
+          <p>{{ message.content }}</p>
+          <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Indicateur de chargement -->
+    <div class="message assistant" *ngIf="isLoading">
+      <div class="message-content">
+        <div class="message-bubble">
+          <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message d'erreur -->
+    <div class="error-message" *ngIf="errorMessage">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="8" x2="12" y2="12"></line>
+        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+      </svg>
+      <span>{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Zone de saisie -->
+  <div class="chatbot-input">
+    <textarea 
+      #messageInput
+      [(ngModel)]="userInput" 
+      (keypress)="onKeyPress($event)"
+      placeholder="Tapez votre message..."
+      rows="1"
+      [disabled]="isLoading"
+    ></textarea>
+    <button 
+      class="send-button" 
+      (click)="sendMessage()" 
+      [disabled]="!userInput.trim() || isLoading"
+      [class.active]="userInput.trim() && !isLoading"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>
+

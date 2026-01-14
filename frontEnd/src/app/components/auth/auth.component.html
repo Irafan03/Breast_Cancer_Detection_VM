@@ -1,0 +1,87 @@
+<div class="auth-modal-overlay" (click)="onBackdropClick($event)">
+  <div class="auth-modal" (click)="$event.stopPropagation()">
+    <button class="close-button" (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <div class="auth-header">
+      <h2>{{ isLoginMode ? 'Connexion' : 'Inscription' }}</h2>
+      <p>{{ isLoginMode ? 'Connectez-vous à votre compte' : 'Créez un nouveau compte' }}</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div *ngIf="!isLoginMode" class="form-group">
+        <label for="name">Nom complet</label>
+        <input 
+          type="text" 
+          id="name" 
+          [(ngModel)]="name"
+          name="name"
+          placeholder="Entrez votre nom"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email"
+          name="email"
+          placeholder="votre@email.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <div *ngIf="!isLoginMode" class="form-group">
+        <label for="confirmPassword">Confirmer le mot de passe</label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
+
+      <button type="submit" class="submit-button" [disabled]="isLoading">
+        {{ isLoading ? 'En cours...' : (isLoginMode ? 'Se connecter' : 'Créer un compte') }}
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p>
+        {{ isLoginMode ? "Vous n'avez pas de compte ?" : "Vous avez déjà un compte ?" }}
+        <a href="#" (click)="toggleMode(); $event.preventDefault()">
+          {{ isLoginMode ? 'Inscrivez-vous' : 'Connectez-vous' }}
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+
